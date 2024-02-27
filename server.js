@@ -52,6 +52,26 @@ const requestListener = (req, res) => {
     successHandler(res, headers, todos);
     return;
   }
+  if (req.url.startsWith('/todos/') && req.method === 'PATCH') {
+    req.on('end', () => {
+      try {
+        const title = JSON.parse(body).title;
+        if (JSON.parse(body).title === undefined) {
+          errorHandler(res, headers, 404, '"title" is required');
+          return;
+        }
+        const id = req.url.split('/').pop();
+        const index = todos.findIndex((todo) => todo.id === id);
+        if (index === -1)
+          return errorHandler(res, headers, 404, '"Id" Not Found');
+        todos[index].title = title;
+        successHandler(res, headers, todos);
+      } catch (err) {
+        errorHandler(res, headers, 404, 'Unexpected end of JSON input');
+      }
+    });
+    return;
+  }
   if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end();
