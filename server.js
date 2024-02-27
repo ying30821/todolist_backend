@@ -39,6 +39,11 @@ const requestListener = (req, res) => {
     });
     return;
   }
+  if (req.url === '/todos' && req.method === 'DELETE') {
+    todos.splice(0);
+    successHandler(res, headers, todos);
+    return;
+  }
   if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end();
