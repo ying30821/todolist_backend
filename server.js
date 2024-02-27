@@ -44,6 +44,14 @@ const requestListener = (req, res) => {
     successHandler(res, headers, todos);
     return;
   }
+  if (req.url.startsWith('/todos/') && req.method === 'DELETE') {
+    const id = req.url.split('/').pop();
+    const index = todos.findIndex((todo) => todo.id === id);
+    if (index === -1) return errorHandler(res, headers, 404, '"Id" Not Found');
+    todos.splice(index, 1);
+    successHandler(res, headers, todos);
+    return;
+  }
   if (req.method === 'OPTIONS') {
     res.writeHead(200, headers);
     res.end();
