@@ -16,6 +16,11 @@ const requestListener = (req, res) => {
     successHandler(res, headers, todos);
     return;
   }
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200, headers);
+    res.end();
+    return;
+  }
   errorHandler(res, headers, 404, 'Not Found');
 };
 
