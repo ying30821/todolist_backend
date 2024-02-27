@@ -12,7 +12,7 @@ const errorHandler = (res, headers, errorCode, message) => {
   res.writeHead(errorCode, headers);
   res.write(
     JSON.stringify({
-      status: 'success',
+      status: 'failed',
       message,
     })
   );
