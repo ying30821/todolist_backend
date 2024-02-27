@@ -12,8 +12,31 @@ const headers = {
 const todos = [];
 
 const requestListener = (req, res) => {
+  let body = '';
+  req.on('data', (chunk) => {
+    body += chunk;
+  });
   if (req.url === '/todos' && req.method === 'GET') {
     successHandler(res, headers, todos);
+    return;
+  }
+  if (req.url === '/todos' && req.method === 'POST') {
+    req.on('end', () => {
+      try {
+        const title = JSON.parse(body).title;
+        if (JSON.parse(body).title === undefined) {
+          errorHandler(res, headers, 404, '"title" is required');
+          return;
+        }
+        todos.push({
+          id: uuidv4(),
+          title,
+        });
+        successHandler(res, headers, todos);
+      } catch (err) {
+        errorHandler(res, headers, 404, 'Unexpected end of JSON input');
+      }
+    });
     return;
   }
   if (req.method === 'OPTIONS') {
