@@ -1,0 +1,23 @@
+const http = require('http');
+const { v4: uuidv4 } = require('uuid');
+const { successHandler, errorHandler } = require('./handler');
+
+const headers = {
+  'Access-Control-Allow-Headers':
+    'Content-Type, Authorization, Content-Length, X-Requested-With',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'PATCH, POST, GET,OPTIONS,DELETE',
+  'Content-Type': 'application/json',
+};
+const todos = [];
+
+const requestListener = (req, res) => {
+  if (req.url === '/todos' && req.method === 'GET') {
+    successHandler(res, headers, todos);
+    return;
+  }
+  errorHandler(res, headers, 404, 'Not Found');
+};
+
+const server = http.createServer(requestListener);
+server.listen(8080);
