@@ -34,7 +34,7 @@ const requestListener = (req, res) => {
         });
         successHandler(res, headers, todos);
       } catch (err) {
-        errorHandler(res, headers, 404, 'Unexpected end of JSON input');
+        errorHandler(res, headers, 400, 'Unexpected end of JSON input');
       }
     });
     return;
@@ -47,7 +47,7 @@ const requestListener = (req, res) => {
   if (req.url.startsWith('/todos/') && req.method === 'DELETE') {
     const id = req.url.split('/').pop();
     const index = todos.findIndex((todo) => todo.id === id);
-    if (index === -1) return errorHandler(res, headers, 404, '"Id" Not Found');
+    if (index === -1) return errorHandler(res, headers, 400, '"Id" Not Found');
     todos.splice(index, 1);
     successHandler(res, headers, todos);
     return;
@@ -57,17 +57,17 @@ const requestListener = (req, res) => {
       try {
         const title = JSON.parse(body).title;
         if (JSON.parse(body).title === undefined) {
-          errorHandler(res, headers, 404, '"title" is required');
+          errorHandler(res, headers, 400, '"title" is required');
           return;
         }
         const id = req.url.split('/').pop();
         const index = todos.findIndex((todo) => todo.id === id);
         if (index === -1)
-          return errorHandler(res, headers, 404, '"Id" Not Found');
+          return errorHandler(res, headers, 400, '"Id" Not Found');
         todos[index].title = title;
         successHandler(res, headers, todos);
       } catch (err) {
-        errorHandler(res, headers, 404, 'Unexpected end of JSON input');
+        errorHandler(res, headers, 400, 'Unexpected end of JSON input');
       }
     });
     return;
